@@ -13,9 +13,13 @@ namespace TextAdventure.GameObjects.Characters
 			this.name = "Player";
 			_backpack = new Backpack ();
 			_player = this;
+			Language.Processor.AddCommand ("say", SAY_HELP, Say);
+			characterBinding = new TextAdventure.IO.LuaSystem.LuaBinding (name);
+			AddObserver (characterBinding);
 		}
 
 		private static Player _player = null;
+		private const string SAY_HELP = "Makes your character say something.";
 
 		/// <summary>
 		/// Enters a room. Will raise OnRoomExit and OnRoomEnter.
@@ -27,7 +31,6 @@ namespace TextAdventure.GameObjects.Characters
 		{
 			if (room != null)
 			{
-				RemoveObserver (room);
 				room.OnRoomExit ();
 			}
 			room = current;
@@ -35,7 +38,6 @@ namespace TextAdventure.GameObjects.Characters
 			{
 				return;
 			}
-			AddObserver (room);
 			Notify (room, Observers.EventList.OnRoomEnter);
 			room.OnRoomEnter ();
 		}

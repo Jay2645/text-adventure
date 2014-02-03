@@ -5,7 +5,9 @@ namespace TextAdventure.Observers
 	public enum EventList
 	{
 		OnRoomInit,
-		OnRoomEnter
+		OnRoomEnter,
+		OnRoomPrint,
+		OnCharacterSpeak
 	}
 }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace TextAdventure.GameObjects.Characters
 {
@@ -14,6 +15,9 @@ namespace TextAdventure.GameObjects.Characters
 		{
 			this.name = name;
 			_backpack = new Backpack ();
+			characterList.Add (name, this);
+			characterBinding = new TextAdventure.IO.LuaSystem.LuaBinding (name);
+			AddObserver (characterBinding);
 		}
 
 		protected Backpack _backpack = null;
@@ -32,6 +36,8 @@ namespace TextAdventure.GameObjects.Characters
 		}
 
 		protected Goals.Goal goal = null;
+		protected static Dictionary<string, Character> characterList = new Dictionary<string, Character> ();
+		protected IO.LuaSystem.LuaBinding characterBinding;
 
 		/// <summary>
 		/// Say the specified speech.
@@ -41,7 +47,26 @@ namespace TextAdventure.GameObjects.Characters
 		/// </param>
 		public void Say (string speech)
 		{
-			Language.Output.Print (name.ToUpper () + ": \"" + speech + "\"");
+			string say;
+			if (speech.EndsWith ("\""))
+			{
+				say = name.ToUpper () + ": " + speech;
+			}
+			else
+			{
+				say = name.ToUpper () + ": \"" + speech + "\"";
+			}
+			Language.Output.Print (say);
+			Notify (speech, Observers.EventList.OnCharacterSpeak);
+		}
+
+		public static Character GetCharacter (string name)
+		{
+			if (characterList.ContainsKey (name))
+			{
+				return characterList [name];
+			}
+			return new Character (name);
 		}
 
 		/// <summary>

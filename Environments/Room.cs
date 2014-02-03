@@ -11,7 +11,7 @@ namespace TextAdventure.Environments
 	/// <summary>
 	/// A class representing a "room" in the map.
 	/// </summary>
-	public class Room : Observers.Observer
+	public class Room : Observers.Subject
 	{
 		protected Room ()
 		{
@@ -70,6 +70,9 @@ namespace TextAdventure.Environments
 			Processor.AddCommand ("exits", EXITS_HELP, PrintExits);
 			Processor.AddCommand ("go", GO_HELP, Travel);
 			Processor.AddCommand ("pick up", PICK_UP_HELP, GetItem);
+
+			// Creates player for Lua
+			new Player ();
 
 			// Parse JSON
 			string roomJSON = System.IO.File.ReadAllText (jsonPath);
@@ -160,11 +163,12 @@ namespace TextAdventure.Environments
 			this.neighborRooms = neighborRooms;
 			this.items = new List<Item> ();
 			roomBinding = new LuaBinding (name);
+			AddObserver (roomBinding);
 			for (int i = 0; i < items.Length; i++)
 			{
 				this.items.Add (new Item (items [i]));
 			}
-			roomBinding.OnNotify (this, TextAdventure.Observers.EventList.OnRoomInit);
+			Notify (this, TextAdventure.Observers.EventList.OnRoomInit);
 			allRooms.Add (this.name.ToLower (), this);
 		}
 
@@ -184,14 +188,11 @@ namespace TextAdventure.Environments
 		{
 		}
 
-		public override void OnNotify (object entity, Observers.EventList eventType)
+		public Character AddCharacter (string name)
 		{
-			roomBinding.OnNotify (entity, eventType);
-		}
-
-		public void AddCharacter (string name)
-		{
-			characters.Add (new Character (name));
+			Character c = Character.GetCharacter (name);
+			characters.Add (c);
+			return c;
 		}
 
 		/// <summary>
@@ -240,6 +241,7 @@ namespace TextAdventure.Environments
 			PrintCharacters (characters);
 			PrintItems (items);
 			PrintExits (neighborRooms);
+			Notify (this, Observers.EventList.OnRoomPrint);
 		}
 
 		/// <summary>
