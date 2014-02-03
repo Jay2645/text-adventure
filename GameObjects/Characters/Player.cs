@@ -3,6 +3,9 @@ using TextAdventure.Environments;
 
 namespace TextAdventure.GameObjects.Characters
 {
+	/// <summary>
+	/// A class representing the player.
+	/// </summary>
 	public class Player : Character
 	{
 		public Player ()
@@ -14,18 +17,13 @@ namespace TextAdventure.GameObjects.Characters
 
 		private Backpack _backpack = null;
 		private static Player _player = null;
-		public Room room
-		{
-			get
-			{
-				return Globals.room;
-			}
-			set
-			{
-				Globals.room = value;
-			}
-		}
 
+		/// <summary>
+		/// Enters a room. Will raise OnRoomExit and OnRoomEnter.
+		/// </summary>
+		/// <param name='current'>
+		/// The room to enter.
+		/// </param>
 		public void EnterRoom (Room current)
 		{
 			if (room != null)
@@ -40,11 +38,23 @@ namespace TextAdventure.GameObjects.Characters
 			room.OnRoomEnter ();
 		}
 
+		/// <summary>
+		/// Adds an item to our backpack.
+		/// </summary>
+		/// <param name='i'>
+		/// The item to add.
+		/// </param>
 		public void AddItemToBackpack (Item i)
 		{
 			backpack.AddItem (i);
 		}
 
+		/// <summary>
+		/// Removes an item from our backpack.
+		/// </summary>
+		/// <param name='i'>
+		/// The item to remove.
+		/// </param>
 		public void RemoveItemFromBackpack (Item i)
 		{
 			backpack.RemoveItem (i);
@@ -64,6 +74,7 @@ namespace TextAdventure.GameObjects.Characters
 				return _backpack;
 			}
 		}
+
 		/// <summary>
 		/// Gets the player.
 		/// </summary>
@@ -79,6 +90,25 @@ namespace TextAdventure.GameObjects.Characters
 					_player = new Player ();
 				}
 				return _player;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the current room.
+		/// Will also update Globals.
+		/// </summary>
+		/// <value>
+		/// The present room.
+		/// </value>
+		public Room room
+		{
+			get
+			{
+				return Globals.room;
+			}
+			set
+			{
+				Globals.room = value;
 			}
 		}
 		#endregion

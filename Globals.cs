@@ -4,6 +4,9 @@ using TextAdventure.GameObjects.Characters;
 
 namespace TextAdventure
 {
+	/// <summary>
+	/// A class full of some handy things.
+	/// </summary>
 	public static class Globals
 	{
 		public static Room room = null;

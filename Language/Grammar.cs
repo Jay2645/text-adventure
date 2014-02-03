@@ -2,6 +2,9 @@ using System;
 
 namespace TextAdventure.Language
 {
+	/// <summary>
+	/// A class specializing in making things have proper grammar.
+	/// </summary>
 	public static class Grammar
 	{
 		private const string SINGLUAR_ARTICLE = "A ";
@@ -9,17 +12,34 @@ namespace TextAdventure.Language
 		private const string PLURAL = "s";
 		private const string AND_STRING = "and ";
 
+		/// <summary>
+		/// Returns a string formatted as if you have n instances of an item.
+		/// i.e. "a foo," "42x foo"
+		/// </summary>
+		/// <returns>
+		/// A string formatted for n instances of an item.
+		/// </returns>
+		/// <param name='name'>
+		/// The name of the item.
+		/// </param>
+		/// <param name='count'>
+		/// How many you have of it.
+		/// </param>
+		/// <param name='beginSentence'>
+		/// Is this the beginning of a sentence? If so, we should capitalize the beginning.
+		/// </param>
 		public static string MakeItemGrammar (string name, int count, bool beginSentence)
 		{
+			// No item to add, return an empty string
 			if (name == "")
 			{
 				return "";
 			}
 			string output = "";
-			if (count == 1)
+			if (count == 1) // Only 1 item here
 			{
 				char vowel = name [0];
-				if (vowel == 'a' || vowel == 'e' || vowel == 'i' || vowel == 'u')
+				if (vowel == 'a' || vowel == 'e' || vowel == 'i' || vowel == 'u') // Use "an" rather than "a"
 				{
 					string prefix = Grammar.SINGLUAR_ARTICLE_ALT;
 					if (!beginSentence)
@@ -28,7 +48,7 @@ namespace TextAdventure.Language
 					}
 					output = prefix + name;
 				}
-				else
+				else // Use "a"
 				{
 					string prefix = Grammar.SINGLUAR_ARTICLE;
 					if (!beginSentence)
@@ -54,11 +74,20 @@ namespace TextAdventure.Language
 					predicate = "";
 				}
 				output = count + " " + subject + PLURAL + predicate;*/
-				output = count + "x " + name;
+				output = count + "x " + name; // 42x flower
 			}
 			return output;
 		}
 
+		/// <summary>
+		/// Makes an array of strings into a list of items.
+		/// </summary>
+		/// <returns>
+		/// A list of items. For example, "a boy, a dog, and a horse."
+		/// </returns>
+		/// <param name='itemStrings'>
+		/// The base strings from which to make the list.
+		/// </param>
 		public static string MakeItemList (string[] itemStrings)
 		{
 			if (itemStrings == null || itemStrings.Length == 0)

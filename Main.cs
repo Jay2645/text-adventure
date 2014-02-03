@@ -6,6 +6,9 @@ using TextAdventure.Language;
 
 namespace TextAdventure
 {
+	/// <summary>
+	/// The main class.
+	/// </summary>
 	class MainClass
 	{
 		private const string WELCOME_STRING = "Welcome to ";
@@ -25,6 +28,9 @@ namespace TextAdventure
 			Globals.player.EnterRoom (Room.GetRoom ("start"));
 		}
 
+		/// <summary>
+		/// Asks the user what map they want to load, then loads the map.
+		/// </summary>
 		private static void LoadMap ()
 		{
 			string roomPath = Path.GetDirectoryName (Assembly.GetEntryAssembly ().Location);

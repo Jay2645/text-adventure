@@ -49,6 +49,7 @@
     <Compile Include="Language\Processor.cs" />
     <Compile Include="IO\SimpleJSON.cs" />
     <Compile Include="Language\Grammar.cs" />
+    <Compile Include="Environments\DirectionConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.desktop">

@@ -2,6 +2,9 @@ using System;
 
 namespace TextAdventure.GameObjects
 {
+	/// <summary>
+	/// A class representing a "Game Object."
+	/// </summary>
 	public class GameObject
 	{
 		protected GameObject ()

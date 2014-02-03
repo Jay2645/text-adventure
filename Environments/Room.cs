@@ -6,6 +6,9 @@ using TextAdventure.IO;
 
 namespace TextAdventure.Environments
 {
+	/// <summary>
+	/// A class representing a "room" in the map.
+	/// </summary>
 	public class Room
 	{
 		protected Room ()
@@ -16,12 +19,28 @@ namespace TextAdventure.Environments
 			SetRoom (name, description, items, neighborRooms);
 		}
 
+		/// <summary>
+		/// The name of this room.
+		/// </summary>
 		public string name = "";
+		/// <summary>
+		/// How this room is described to the player.
+		/// </summary>
 		public string description = "";
+		/// <summary>
+		/// All items in this room.
+		/// </summary>
 		public List<Item> items = null;
+		/// <summary>
+		/// Any neighbor rooms and their direction.
+		/// </summary>
 		public Dictionary<Direction, string> neighborRooms = null;
+		/// <summary>
+		/// All rooms the game knows about.
+		/// </summary>
 		private static Dictionary<string, Room> allRooms = new Dictionary<string, Room> ();
 
+		// Strings to output to the console, to be localized at a later date
 		private const string MULTI_EXIT_STRING = "Exits are to the ";
 		private const string SINGLE_EXIT_STRING = "There is an exit to the ";
 		private const string NO_ENTRY = "You cannot go that way.";
@@ -32,16 +51,25 @@ namespace TextAdventure.Environments
 		private const string GO_HELP = "Move in the specified direction.";
 		private const string PICK_UP_HELP = "Pick up an item.";
 
+		/// <summary>
+		/// Initializes all rooms in the game based on the path to a JSON file.
+		/// </summary>
+		/// <param name='jsonPath'>
+		/// The path to the JSON file.
+		/// </param>
 		public static void InitRooms (string jsonPath)
 		{
+			// Add commands to the processor
 			Processor.AddCommand ("exits", EXITS_HELP, PrintExits);
 			Processor.AddCommand ("go", GO_HELP, Travel);
 			Processor.AddCommand ("pick up", PICK_UP_HELP, GetItem);
 
+			// Parse JSON
 			string roomJSON = System.IO.File.ReadAllText (jsonPath);
 			JSONArray parsedJSON = JSON.Parse (roomJSON).AsArray;
 			for (int i = 0; i < parsedJSON.Count; i++)
 			{
+				// Each JSON object in the array is one room
 				JSONClass jClass = parsedJSON [i].AsObject;
 				string roomName = jClass ["name"];
 				if (roomName == null)
@@ -68,10 +96,20 @@ namespace TextAdventure.Environments
 					}
 					exitDic.Add (direction, otherRoom);
 				}
+				// The room will auto-add itself to the list of all rooms
 				new Room (roomName, roomDesc, items, exitDic);
 			}
 		}
 
+		/// <summary>
+		/// Gets a room by name.
+		/// </summary>
+		/// <returns>
+		/// The room, or null if there is no room by that name.
+		/// </returns>
+		/// <param name='name'>
+		/// The room's name.
+		/// </param>
 		public static Room GetRoom (string name)
 		{
 			name = name.ToLower ();
@@ -82,7 +120,22 @@ namespace TextAdventure.Environments
 			return null;
 		}
 
-		public void SetRoom (string name, string description, string[] items, Dictionary<Direction, string> neighborRooms)
+		/// <summary>
+		/// Sets values corresponding to this particular room.
+		/// </summary>
+		/// <param name='name'>
+		/// The name of this room.
+		/// </param>
+		/// <param name='description'>
+		/// The description of this room.
+		/// </param>
+		/// <param name='items'>
+		/// Any items in this room.
+		/// </param>
+		/// <param name='neighborRooms'>
+		/// All neighboring rooms.
+		/// </param>
+		protected void SetRoom (string name, string description, string[] items, Dictionary<Direction, string> neighborRooms)
 		{
 			this.name = name;
 			this.description = description;
@@ -95,16 +148,29 @@ namespace TextAdventure.Environments
 			allRooms.Add (this.name.ToLower (), this);
 		}
 
+		/// <summary>
+		/// Raises the room enter event.
+		/// </summary>
 		public virtual void OnRoomEnter ()
 		{
 			PrintRoom ();
 			Input.ProcessLine ();
 		}
 
+		/// <summary>
+		/// Raises the room exit event.
+		/// </summary>
 		public virtual void OnRoomExit ()
 		{
 		}
 
+		/// <summary>
+		/// Gets an item by partial name and places it into the player's inventory.
+		/// Notifies the player that they picked up the item.
+		/// </summary>
+		/// <param name='s'>
+		/// The item's partial or full name.
+		/// </param>
 		public static void GetItem (string s)
 		{
 			string itemName = s.ToLower ().Trim ();
@@ -119,14 +185,24 @@ namespace TextAdventure.Environments
 				}
 			}
 			Output.Print (COULD_NOT_FIND_ITEM + s);
+			return;
 		}
 
+		/// <summary>
+		/// Gets an item directly, puts it into the player's inventory, and removes it from this room.
+		/// </summary>
+		/// <param name='i'>
+		/// The item in question.
+		/// </param>
 		public static void GetItem (Item i)
 		{
 			GameObjects.Characters.Player.player.AddItemToBackpack (i);
 			Globals.room.items.Remove (i);
 		}
 
+		/// <summary>
+		/// Prints the contents of this room to the console.
+		/// </summary>
 		public virtual void PrintRoom ()
 		{
 			Output.Print (name.ToUpper () + ":");
@@ -135,16 +211,34 @@ namespace TextAdventure.Environments
 			PrintExits (neighborRooms);
 		}
 
+		/// <summary>
+		/// Prints the exits to active room.
+		/// </summary>
+		/// <param name='param'>
+		/// Ignored.
+		/// </param>
 		public static void PrintExits (string param)
 		{
 			PrintExits (Globals.room.neighborRooms);
 		}
 
+		/// <summary>
+		/// Prints the items in the active room.
+		/// </summary>
+		/// <param name='param'>
+		/// Ignored.
+		/// </param>
 		public static void PrintItems (string param)
 		{
 			PrintItems (Globals.room.items);
 		}
 
+		/// <summary>
+		/// Prints a provided list of items.
+		/// </summary>
+		/// <param name='items'>
+		/// A list of items.
+		/// </param>
 		public static void PrintItems (List<Item> items)
 		{
 			if (items == null || items.Count == 0)
@@ -174,6 +268,13 @@ namespace TextAdventure.Environments
 			Output.Print (ITEMS + Grammar.MakeItemList (itemStrList.ToArray ()));
 		}
 
+		/// <summary>
+		/// Prints the exits to this room.
+		/// </summary>
+		/// <param name='exitDic'>
+		/// A generic Dictionary providing the exits to this room.
+		/// Direction is the direction the exit is in, and string is the name of the next room.
+		/// </param>
 		public static void PrintExits (Dictionary<Direction, string> exitDic)
 		{
 			string exits;
@@ -194,6 +295,12 @@ namespace TextAdventure.Environments
 			Output.Print (exits);
 		}
 
+		/// <summary>
+		/// Travel in the specified direction.
+		/// </summary>
+		/// <param name='dir'>
+		/// The direction to travel.
+		/// </param>
 		public static void Travel (string dir)
 		{
 			Direction direction = DirectionConverter.FromString (dir);
@@ -213,6 +320,8 @@ namespace TextAdventure.Environments
 				}
 				else
 				{
+					// Houston, we have a problem.
+					// The .json file *probably* has a typo in an exit somewhere.
 					Output.Print ("Uh-oh. I can't find a room called " + roomName + ". I know I put the room around here somewhere...");
 				}
 			}
