@@ -32,6 +32,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="KopiLua">
+      <HintPath>KopiLua.dll</HintPath>
+    </Reference>
+    <Reference Include="KopiLuaDll">
+      <HintPath>KopiLuaDll.dll</HintPath>
+    </Reference>
+    <Reference Include="KopiLuaInterface">
+      <HintPath>KopiLuaInterface.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -50,6 +59,12 @@
     <Compile Include="IO\SimpleJSON.cs" />
     <Compile Include="Language\Grammar.cs" />
     <Compile Include="Environments\DirectionConverter.cs" />
+    <Compile Include="Observer\Observer.cs" />
+    <Compile Include="Observer\Subject.cs" />
+    <Compile Include="Goals\Goal.cs" />
+    <Compile Include="Goals\Aquire.cs" />
+    <Compile Include="IO\Lua\LuaBinding.cs" />
+    <Compile Include="IO\Lua\LuaManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.desktop">
@@ -63,5 +78,19 @@
     <Folder Include="GameObjects\Characters\" />
     <Folder Include="Environments\" />
     <Folder Include="IO\" />
+    <Folder Include="Observer\" />
+    <Folder Include="Story\" />
+    <Folder Include="Goals\" />
+    <Folder Include="IO\Lua\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="KopiLua.dll" />
+    <None Include="KopiLua.dll.mdb" />
+    <None Include="KopiLua.dll.mdb.meta" />
+    <None Include="KopiLua.dll.meta" />
+    <None Include="KopiLuaDll.dll" />
+    <None Include="KopiLuaDll.dll.meta" />
+    <None Include="KopiLuaInterface.dll" />
+    <None Include="KopiLuaInterface.dll.meta" />
   </ItemGroup>
 </Project>

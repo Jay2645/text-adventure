@@ -15,7 +15,6 @@ namespace TextAdventure.GameObjects.Characters
 			_player = this;
 		}
 
-		private Backpack _backpack = null;
 		private static Player _player = null;
 
 		/// <summary>
@@ -61,19 +60,6 @@ namespace TextAdventure.GameObjects.Characters
 		}
 
 		#region Getters
-		/// <summary>
-		/// Gets the player's backpack.
-		/// </summary>
-		/// <value>
-		/// The player's backpack.
-		/// </value>
-		public Backpack backpack
-		{
-			get
-			{
-				return _backpack;
-			}
-		}
 
 		/// <summary>
 		/// Gets the player.

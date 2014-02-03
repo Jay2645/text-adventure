@@ -3,6 +3,7 @@ using TextAdventure.Language;
 using System.Collections.Generic;
 using TextAdventure.GameObjects;
 using TextAdventure.IO;
+using TextAdventure.IO.LuaSystem;
 
 namespace TextAdventure.Environments
 {
@@ -39,6 +40,7 @@ namespace TextAdventure.Environments
 		/// All rooms the game knows about.
 		/// </summary>
 		private static Dictionary<string, Room> allRooms = new Dictionary<string, Room> ();
+		protected LuaBinding roomBinding = null;
 
 		// Strings to output to the console, to be localized at a later date
 		private const string MULTI_EXIT_STRING = "Exits are to the ";
@@ -82,6 +84,15 @@ namespace TextAdventure.Environments
 				for (int j = 0; j < itemArray.Count; j++)
 				{
 					items [j] = itemArray [j];
+				}
+				JSONArray scripts = jClass ["scripts"].AsArray;
+				if (scripts != null)
+				{	
+					for (int j = 0; j < scripts.Count; j++)
+					{
+						string path = System.IO.Path.GetDirectoryName (jsonPath);
+						LuaManager.AddFilePath (System.IO.Path.Combine (path, "scripts", scripts [j]));
+					}
 				}
 				JSONClass exits = jClass ["exits"].AsObject;
 				Dictionary<Direction, string> exitDic = new Dictionary<Direction, string> ();
@@ -141,6 +152,7 @@ namespace TextAdventure.Environments
 			this.description = description;
 			this.neighborRooms = neighborRooms;
 			this.items = new List<Item> ();
+			roomBinding = new LuaBinding (name);
 			for (int i = 0; i < items.Length; i++)
 			{
 				this.items.Add (new Item (items [i]));

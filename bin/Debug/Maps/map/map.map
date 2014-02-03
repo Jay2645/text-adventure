@@ -15,6 +15,9 @@
       "flowerpot",
       "picture of your mom. Doesn't she look nice in it?"
     ],
+    "scripts": [
+      "test.lua"
+    ]
     "exits": {
       "south": "start"
     }

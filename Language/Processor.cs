@@ -70,6 +70,10 @@ namespace TextAdventure.Language
 		public static void AddCommand (string name, string helpDesc, Action<string> perform)
 		{
 			name = name.ToLower ();
+			if (commandHelp.ContainsKey (name))
+			{
+				return;
+			}
 			commands.Add (name, perform);
 			commandHelp.Add (name, helpDesc);
 		}

@@ -61,6 +61,25 @@ namespace TextAdventure.GameObjects
 		}
 
 		/// <summary>
+		/// Checks to see if the backpack contains this item.
+		/// </summary>
+		/// <returns>
+		/// TRUE if it contains the specified item, else FALSE.
+		/// </returns>
+		/// <param name='i'>
+		/// The item to check.
+		/// </param>
+		public bool ContainsItem (Item i)
+		{
+			List<string> items = new List<string> ();
+			foreach (Item item in backpackItems)
+			{
+				items.Add (item.name.ToLower ());
+			}
+			return items.Contains (i.name.ToLower ());
+		}
+
+		/// <summary>
 		/// Prints the contents of our backpack.
 		/// </summary>
 		/// <param name='param'>
