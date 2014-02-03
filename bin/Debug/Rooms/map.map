@@ -1,0 +1,30 @@
+[
+  {
+    "name": "start",
+    "desc": "You are in a room.",
+    "items": [],
+    "exits": {
+      "north": "a room",
+      "south": "another room"
+    }
+  },
+  {
+    "name": "a room",
+    "desc": "You are in a different room.",
+    "items": [
+      "flowerpot",
+      "picture of your mom. Doesn't she look nice in it?"
+    ],
+    "exits": {
+      "south": "start"
+    }
+  },
+  {
+    "name": "another room",
+    "desc": "You are in still another room.",
+    "items": [],
+    "exits": {
+      "north": "start"
+    }
+  }
+]
