@@ -27,6 +27,7 @@ namespace TextAdventure.GameObjects.Characters
 		{
 			if (room != null)
 			{
+				RemoveObserver (room);
 				room.OnRoomExit ();
 			}
 			room = current;
@@ -34,6 +35,8 @@ namespace TextAdventure.GameObjects.Characters
 			{
 				return;
 			}
+			AddObserver (room);
+			Notify (room, Observers.EventList.OnRoomEnter);
 			room.OnRoomEnter ();
 		}
 

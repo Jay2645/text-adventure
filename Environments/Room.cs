@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using TextAdventure.GameObjects;
 using TextAdventure.IO;
 using TextAdventure.IO.LuaSystem;
+using TextAdventure.GameObjects.Characters;
 
 namespace TextAdventure.Environments
 {
 	/// <summary>
 	/// A class representing a "room" in the map.
 	/// </summary>
-	public class Room
+	public class Room : Observers.Observer
 	{
 		protected Room ()
 		{
@@ -32,6 +33,7 @@ namespace TextAdventure.Environments
 		/// All items in this room.
 		/// </summary>
 		public List<Item> items = null;
+		public List<Character> characters = new List<Character> ();
 		/// <summary>
 		/// Any neighbor rooms and their direction.
 		/// </summary>
@@ -40,6 +42,9 @@ namespace TextAdventure.Environments
 		/// All rooms the game knows about.
 		/// </summary>
 		private static Dictionary<string, Room> allRooms = new Dictionary<string, Room> ();
+		/// <summary>
+		/// The LuaBinding for this room.
+		/// </summary>
 		protected LuaBinding roomBinding = null;
 
 		// Strings to output to the console, to be localized at a later date
@@ -112,6 +117,8 @@ namespace TextAdventure.Environments
 			}
 		}
 
+
+
 		/// <summary>
 		/// Gets a room by name.
 		/// </summary>
@@ -157,6 +164,7 @@ namespace TextAdventure.Environments
 			{
 				this.items.Add (new Item (items [i]));
 			}
+			roomBinding.OnNotify (this, TextAdventure.Observers.EventList.OnRoomInit);
 			allRooms.Add (this.name.ToLower (), this);
 		}
 
@@ -174,6 +182,16 @@ namespace TextAdventure.Environments
 		/// </summary>
 		public virtual void OnRoomExit ()
 		{
+		}
+
+		public override void OnNotify (object entity, Observers.EventList eventType)
+		{
+			roomBinding.OnNotify (entity, eventType);
+		}
+
+		public void AddCharacter (string name)
+		{
+			characters.Add (new Character (name));
 		}
 
 		/// <summary>
@@ -219,6 +237,7 @@ namespace TextAdventure.Environments
 		{
 			Output.Print (name.ToUpper () + ":");
 			Output.Print (description);
+			PrintCharacters (characters);
 			PrintItems (items);
 			PrintExits (neighborRooms);
 		}
@@ -278,6 +297,14 @@ namespace TextAdventure.Environments
 				itemStrList.Add (Grammar.MakeItemGrammar (key, value, false));
 			}
 			Output.Print (ITEMS + Grammar.MakeItemList (itemStrList.ToArray ()));
+		}
+
+		public static void PrintCharacters (List<Character> characters)
+		{
+			foreach (Character c in characters)
+			{
+				Output.Print ("There is someone named " + c.name + " here.");
+			}
 		}
 
 		/// <summary>

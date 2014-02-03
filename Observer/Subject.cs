@@ -22,7 +22,7 @@ namespace TextAdventure
 			/// <param name='eventType'>
 			/// A unique string identifying the event.
 			/// </param>
-			public void Notify (GameObjects.GameObject entity, string eventType)
+			public void Notify (object entity, EventList eventType)
 			{
 				List<Observer> allObservers = new List<Observer> ();
 				foreach (Observer o in observerList)

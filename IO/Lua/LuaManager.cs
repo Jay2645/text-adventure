@@ -47,9 +47,9 @@ namespace TextAdventure.IO
 
 				//Init LuaBinding class that demonstrates communication
 				//Also tell Lua about the LuaBinding object to allow Lua to call C# functions
-				new LuaBinding ("main");
+				mainBinding = new LuaBinding ("main");
 			}
-
+			public static LuaBinding mainBinding = null;
 			private static List<string> filePaths = new List<string> ();
 
 			public static void AddFilePath (string path)
@@ -114,7 +114,7 @@ namespace TextAdventure.IO
 					lua.DoString (luaString);
 					return true;
 				}
-				catch (System.Exception e)
+				catch (System.Exception)
 				{
 					return false;
 				}

@@ -4,7 +4,7 @@
 	{
 		public abstract class Observer
 		{
-			public abstract void OnNotify (GameObjects.GameObject entity, string eventType);
+			public abstract void OnNotify (object entity, EventList eventType);
 		}
 	}
 }

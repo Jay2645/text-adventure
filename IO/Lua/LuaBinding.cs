@@ -53,9 +53,12 @@ namespace TextAdventure.IO
 				}
 			}
 
-			public override void OnNotify (GameObject entity, string eventType)
+			public override void OnNotify (object entity, EventList eventType)
 			{
-				CallLuaFunction (eventType);
+				CallLuaFunction (eventType.ToString (), new object[] {
+					entity
+				}
+				);
 			}
 
 			public object[] CallLuaFunction (string funcName)

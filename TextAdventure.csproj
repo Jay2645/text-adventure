@@ -65,6 +65,7 @@
     <Compile Include="Goals\Aquire.cs" />
     <Compile Include="IO\Lua\LuaBinding.cs" />
     <Compile Include="IO\Lua\LuaManager.cs" />
+    <Compile Include="Observer\EventList.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.desktop">

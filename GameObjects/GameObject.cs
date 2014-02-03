@@ -10,10 +10,12 @@ namespace TextAdventure.GameObjects
 	{
 		protected GameObject ()
 		{
+			AddObserver (TextAdventure.IO.LuaSystem.LuaManager.mainBinding);
 		}
 		public GameObject (string name)
 		{
 			this.name = name;
+			AddObserver (TextAdventure.IO.LuaSystem.LuaManager.mainBinding);
 		}
 		/// <summary>
 		/// The name of this GameObject.
@@ -35,7 +37,7 @@ namespace TextAdventure.GameObjects
 		/// <param name='eventType'>
 		/// A unique string identifying the event.
 		/// </param>
-		public void Notify (GameObject entity, string eventType)
+		public void Notify (object entity, EventList eventType)
 		{
 			subject.Notify (entity, eventType);
 		}
