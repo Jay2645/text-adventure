@@ -67,6 +67,7 @@
     <Compile Include="IO\Lua\LuaManager.cs" />
     <Compile Include="Observer\EventList.cs" />
     <Compile Include="IO\Lua\MainBinding.cs" />
+    <Compile Include="States\State.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.desktop">
@@ -84,6 +85,7 @@
     <Folder Include="Story\" />
     <Folder Include="Goals\" />
     <Folder Include="IO\Lua\" />
+    <Folder Include="States\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="KopiLua.dll" />

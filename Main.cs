@@ -27,6 +27,8 @@ namespace TextAdventure
 			// Initialize scripting logic
 			TextAdventure.IO.LuaSystem.LuaManager.DoAllFiles ();
 
+			Console.Clear ();
+
 			// Start game loop
 			Globals.player.EnterRoom (Room.GetRoom ("start"));
 		}
@@ -40,6 +42,13 @@ namespace TextAdventure
 			roomPath = Path.Combine (roomPath, "Maps");
 			Output.Print (SELECT_MAP_STRING);
 			string input = Input.GetLine ();
+			if (input.ToLower () == "debug")
+			{
+				Output.Print ("Debug mode initialized.");
+				Globals.isDebug = true;
+				LoadMap ();
+				return;
+			}
 			input = Path.Combine (roomPath, input, input + ".map");
 			if (File.Exists (input))
 			{

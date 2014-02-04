@@ -17,6 +17,8 @@ namespace TextAdventure
 				return Player.player;
 			}
 		}
+
+		public static bool isDebug = false;
 	}
 }
 

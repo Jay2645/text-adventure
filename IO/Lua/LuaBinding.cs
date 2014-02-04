@@ -68,9 +68,18 @@ namespace TextAdventure.IO
 
 			public object[] CallLuaFunction (string funcName, object[] args)
 			{
+				funcName = funcName.ToLower ();
+				if (!LuaManager.QueueFunction (this, funcName, args))
+				{
+					return null;
+				}
+				if (Globals.isDebug)
+				{
+					Language.Output.Print (name + ":" + funcName);
+				}
 				foreach (KeyValuePair<string, LuaFunction> kvp in functionList)
 				{
-					if (kvp.Key.ToLower () == funcName.ToLower ())
+					if (kvp.Key.ToLower () == funcName)
 					{
 						return MessageToLua (kvp.Value, args);
 					}

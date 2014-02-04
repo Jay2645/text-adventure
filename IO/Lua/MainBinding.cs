@@ -1,5 +1,6 @@
 using System;
 using TextAdventure.GameObjects.Characters;
+using TextAdventure.Environments;
 
 namespace TextAdventure.IO.LuaSystem
 {
@@ -13,6 +14,22 @@ namespace TextAdventure.IO.LuaSystem
 		public Character GetCharacter (string name)
 		{
 			return Character.GetCharacter (name);
+		}
+
+		public Room CurrentRoom ()
+		{
+			return Globals.room;
+		}
+
+		public Player GetPlayer ()
+		{
+			return Globals.player;
+		}
+
+		public States.State CreateState (string stateStr)
+		{
+			States.State state = new States.State (stateStr);
+			return state;
 		}
 	}
 }

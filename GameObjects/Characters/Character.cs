@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TextAdventure.States;
 
 namespace TextAdventure.GameObjects.Characters
 {
@@ -38,6 +39,7 @@ namespace TextAdventure.GameObjects.Characters
 		protected Goals.Goal goal = null;
 		protected static Dictionary<string, Character> characterList = new Dictionary<string, Character> ();
 		protected IO.LuaSystem.LuaBinding characterBinding;
+		public State state = null;
 
 		/// <summary>
 		/// Say the specified speech.
@@ -57,7 +59,7 @@ namespace TextAdventure.GameObjects.Characters
 				say = name.ToUpper () + ": \"" + speech + "\"";
 			}
 			Language.Output.Print (say);
-			Notify (speech, Observers.EventList.OnCharacterSpeak);
+			Notify (speech.ToLower (), Observers.EventList.OnCharacterSpeak);
 		}
 
 		public static Character GetCharacter (string name)

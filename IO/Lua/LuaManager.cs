@@ -7,6 +7,13 @@ namespace TextAdventure.IO
 	{
 		public static class LuaManager
 		{
+			private struct QueuedFunction
+			{
+				public LuaBinding binding;
+				public string funcName;
+				public object[] param;
+			}
+
 			//Reference to the Lua virtual machine
 			public static Lua lua
 			{
@@ -51,6 +58,7 @@ namespace TextAdventure.IO
 			}
 			public static LuaBinding mainBinding = null;
 			private static List<string> filePaths = new List<string> ();
+			private static List<QueuedFunction> queuedFuncs = new List<QueuedFunction> ();
 
 			public static void AddFilePath (string path)
 			{
@@ -71,6 +79,12 @@ namespace TextAdventure.IO
 				{
 					DoFile (file);
 				}
+				foreach (QueuedFunction queuedFunc in queuedFuncs)
+				{
+					LuaBinding binding = queuedFunc.binding;
+					binding.CallLuaFunction (queuedFunc.funcName, queuedFunc.param);
+				}
+				queuedFuncs.Clear ();
 			}
 
 			public static void LuaPrint (object message)
@@ -82,6 +96,21 @@ namespace TextAdventure.IO
 			public static void LuaError (object message)
 			{
 				throw new LuaException (message.ToString ());
+			}
+
+			public static bool QueueFunction (LuaBinding binding, string funcName, object[] param)
+			{
+				if (didAllFiles)
+				{
+					return true;
+				}
+				// This is a bit messy, but basically this keeps track of all functions
+				QueuedFunction queuedFunc = new QueuedFunction ();
+				queuedFunc.binding = binding;
+				queuedFunc.funcName = funcName;
+				queuedFunc.param = param;
+				queuedFuncs.Add (queuedFunc);
+				return false;
 			}
 
 			public static bool LuaAssert (bool value, object message)
