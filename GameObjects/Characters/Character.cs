@@ -71,6 +71,11 @@ namespace TextAdventure.GameObjects.Characters
 			return new Character (name);
 		}
 
+		public void SetAquireGoal (string wanted, string owner)
+		{
+			goal = new TextAdventure.Goals.Aquire (this, new Item (wanted), GetCharacter (owner));
+		}
+
 		/// <summary>
 		/// Checks if a goal is satisfied. Nulls the goal on completion.
 		/// </summary>

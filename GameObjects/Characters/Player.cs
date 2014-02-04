@@ -16,6 +16,7 @@ namespace TextAdventure.GameObjects.Characters
 			Language.Processor.AddCommand ("say", SAY_HELP, Say);
 			characterBinding = new TextAdventure.IO.LuaSystem.LuaBinding (name);
 			AddObserver (characterBinding);
+			characterList.Add (name, this);
 		}
 
 		private static Player _player = null;

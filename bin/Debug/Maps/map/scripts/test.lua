@@ -12,7 +12,8 @@ local states =
 			hello = "howareyou",
 			hi = "howareyou"
 		},
-		response = "How are you doing today, then?"
+		response = "Listen, can you get my flowerpot?",
+		func = function() bruce:SetAquireGoal("flowerpot","Player") end
 	},
 	howareyou = 
 	{
@@ -26,7 +27,8 @@ local states =
 			good = "doingfine",
 			well = "doingfine"
 		},
-		response = "That's good, that's good."
+		response = "That's good, that's good.",
+		func = function() end
 	}
 }
 local current
@@ -41,13 +43,19 @@ function addplayers(room)
 end
 
 function onenter(room)
-	bruce:Say("Oh, hello there, mate.")
+	if(current == states.hello) then
+		bruce:Say("Oh, hello there, mate.")
+	elseif(bruce:CheckGoal()) then
+		bruce:Say("Oh, fantastic. You found my flowerpot.")
+		main:GameOver("You won!")
+	end
 end
 
 function onspeak(speech)
 	for key,value in pairs(current.stateTransitions) do
 		if string.find(speech,key) and bruce.state:IsAllowedState(value) then
 			bruce:Say(current.response)
+			current.func()
 			current = states[value]
 			if current then
 				bruce.state = main:CreateState(value)

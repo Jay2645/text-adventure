@@ -31,6 +31,13 @@ namespace TextAdventure.IO.LuaSystem
 			States.State state = new States.State (stateStr);
 			return state;
 		}
+
+		public void GameOver (string message)
+		{
+			Language.Output.Print ("Game over!");
+			Language.Output.Print (message);
+			Environment.Exit (0);
+		}
 	}
 }
 
