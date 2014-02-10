@@ -82,7 +82,6 @@
     <Folder Include="Environments\" />
     <Folder Include="IO\" />
     <Folder Include="Observer\" />
-    <Folder Include="Story\" />
     <Folder Include="Goals\" />
     <Folder Include="IO\Lua\" />
     <Folder Include="States\" />

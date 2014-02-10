@@ -28,7 +28,7 @@ namespace TextAdventure.IO
 			}
 			private static Lua _lua = null;
 			private static bool didAllFiles = false;
-			//Filename of the Lua file to load in the Streaming Assets folder
+			//Filename of the Lua file to load
 			public static void Init ()
 			{
 				if (_lua != null)

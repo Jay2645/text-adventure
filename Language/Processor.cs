@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using LuaInterface;
 
 namespace TextAdventure.Language
 {
@@ -9,6 +10,17 @@ namespace TextAdventure.Language
 	/// </summary>
 	public static class Processor
 	{
+		private static Dictionary<string, LuaFunction> luaCommands
+		{
+			get
+			{
+				if (_luaCommands == null)
+				{
+					InitializeDictionaries ();
+				}
+				return _luaCommands;
+			}
+		}
 		private static Dictionary<string, Action<string>> commands
 		{
 			get
@@ -33,6 +45,7 @@ namespace TextAdventure.Language
 		}
 
 		private static Dictionary<string, Action<string>> _commands = null;
+		private static Dictionary<string, LuaFunction> _luaCommands = null;
 		private static Dictionary<string, string> _commandHelp = null;
 
 		/// <summary>
@@ -48,6 +61,7 @@ namespace TextAdventure.Language
 		private static void InitializeDictionaries ()
 		{
 			_commands = new Dictionary<string, Action<string>> ();
+			_luaCommands = new Dictionary<string, LuaFunction> ();
 			_commandHelp = new Dictionary<string, string> ();
 			_commands.Add ("help", Help);
 			_commandHelp.Add ("help", HELP_DESC);
@@ -78,6 +92,17 @@ namespace TextAdventure.Language
 			commandHelp.Add (name, helpDesc);
 		}
 
+		public static void AddCommand (string name, string helpDesc, LuaFunction perform)
+		{
+			name = name.ToLower ();
+			if (commandHelp.ContainsKey (name))
+			{
+				return;
+			}
+			commandHelp.Add (name, helpDesc);
+			luaCommands.Add (name, perform);
+		}
+
 		/// <summary>
 		/// Processes user input.
 		/// </summary>
@@ -94,8 +119,9 @@ namespace TextAdventure.Language
 			{
 				command = input.Substring (0, firstSpace).ToLower ();
 				param = input.Substring (firstSpace + 1);
-				if (!commands.ContainsKey (command)) // No command found, might have gotten spacing wrong
+				if (!commands.ContainsKey (command) && !luaCommands.ContainsKey (command))
 				{
+					// No command found, might have gotten spacing wrong
 					firstSpace = param.IndexOf (' ');
 					if (firstSpace > -1)
 					{
@@ -129,6 +155,10 @@ namespace TextAdventure.Language
 			if (commands.ContainsKey (command))
 			{
 				commands [command].Invoke (param);
+			}
+			else if (luaCommands.ContainsKey (command))
+			{
+				luaCommands [command].Call (param);
 			}
 			else
 			{

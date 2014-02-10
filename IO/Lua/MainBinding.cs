@@ -32,6 +32,12 @@ namespace TextAdventure.IO.LuaSystem
 			return state;
 		}
 
+		public void AddCommand (string command, string help, LuaInterface.LuaFunction function)
+		{
+			BindMessageFunction (function, command);
+			TextAdventure.Language.Processor.AddCommand (command, help, function);
+		}
+
 		public void GameOver (string message)
 		{
 			Language.Output.Print ("Game over!");

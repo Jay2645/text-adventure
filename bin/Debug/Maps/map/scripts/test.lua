@@ -3,10 +3,6 @@ local states =
 {
 	hello =
 	{
-		allowedStates =
-		{
-			"howareyou"
-		},
 		stateTransitions =
 		{
 			hello = "howareyou",
@@ -17,10 +13,6 @@ local states =
 	},
 	howareyou = 
 	{
-		allowedStates =
-		{
-			"doingfine"
-		},
 		stateTransitions = 
 		{
 			fine = "doingfine",
@@ -33,16 +25,20 @@ local states =
 }
 local current
 
-function addplayers(room)
-	bruce = room:AddCharacter("Bruce")
-	bruce.state = main:CreateState("hello")
-	current = states.hello
-	for i=1, #(current.allowedStates) do
-		bruce.state:AddAllowedState(states.hello.allowedStates[i])
+local function allowstates(character, state)
+	current = states[state]
+	character.state = main:CreateState(state)
+	for key,value in pairs(current.stateTransitions) do
+		character.state:AddAllowedState(value)
 	end
 end
 
-function onenter(room)
+local function addplayers(room)
+	bruce = room:AddCharacter("Bruce")
+	allowstates(bruce, "hello")
+end
+
+local function onenter(room)
 	if(current == states.hello) then
 		bruce:Say("Oh, hello there, mate.")
 	elseif(bruce:CheckGoal()) then
@@ -51,22 +47,24 @@ function onenter(room)
 	end
 end
 
-function onspeak(speech)
+local function onspeak(speech)
 	for key,value in pairs(current.stateTransitions) do
 		if string.find(speech,key) and bruce.state:IsAllowedState(value) then
 			bruce:Say(current.response)
 			current.func()
-			current = states[value]
 			if current then
-				bruce.state = main:CreateState(value)
-				for i=1, #(current.allowedStates) do
-					bruce.state:AddAllowedState(current.allowedStates[i])
-				end
+				allowstates(bruce, value)
 			end
 		end
 	end
 end
 
+local function test(param)
+	print("Hi there!")
+	print(param)
+end
+
 start:BindMessageFunction(addplayers,"onroominit")
 start:BindMessageFunction(onenter,"onroomprint")
 player:BindMessageFunction(onspeak,"oncharacterspeak")
+main:AddCommand("testing", "Tests the Lua messaging system.", test)

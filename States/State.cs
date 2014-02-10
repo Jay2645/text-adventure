@@ -31,6 +31,10 @@ namespace TextAdventure.States
 		public void AddAllowedState (string state)
 		{
 			state = state.ToLower ();
+			if (allowedStates.Contains (state))
+			{
+				return;
+			}
 			allowedStates.Add (state);
 		}
 
