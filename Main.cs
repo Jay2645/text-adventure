@@ -25,7 +25,7 @@ namespace TextAdventure
 			LoadMap ();
 
 			// Initialize scripting logic
-			TextAdventure.IO.LuaSystem.LuaManager.DoAllFiles ();
+			//TextAdventure.IO.LuaSystem.LuaManager.DoAllFiles ();
 
 			Console.Clear ();
 

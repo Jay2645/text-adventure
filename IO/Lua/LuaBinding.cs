@@ -29,12 +29,12 @@ namespace TextAdventure.IO
 			{
 				binding = binding.ToLower ();
 				binding = binding.Replace (" ", "");
-				LuaManager.lua [binding] = this;
 				name = binding;
+				LuaManager.RegisterBinding (name, this);
 			}
 
 			protected Dictionary<string, LuaFunction> functionList = new Dictionary<string, LuaFunction> ();
-			protected string name = "";
+			public string name = "";
 
 			/// <summary>
 			/// Binds an Lua function to a string.

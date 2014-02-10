@@ -79,6 +79,8 @@ namespace TextAdventure.Environments
 			// Parse JSON
 			string roomJSON = System.IO.File.ReadAllText (jsonPath);
 			JSONArray parsedJSON = JSON.Parse (roomJSON).AsArray;
+			string scriptsPath = System.IO.Path.GetDirectoryName (jsonPath);
+			LuaManager.scriptsPath = System.IO.Path.Combine (scriptsPath, "scripts");
 			for (int i = 0; i < parsedJSON.Count; i++)
 			{
 				// Each JSON object in the array is one room
@@ -100,8 +102,7 @@ namespace TextAdventure.Environments
 				{	
 					for (int j = 0; j < scripts.Count; j++)
 					{
-						string path = System.IO.Path.GetDirectoryName (jsonPath);
-						LuaManager.AddFilePath (System.IO.Path.Combine (path, "scripts", scripts [j]));
+						LuaManager.AddFilePath (scripts [j]);
 					}
 				}
 				JSONClass exits = jClass ["exits"].AsObject;
@@ -119,6 +120,10 @@ namespace TextAdventure.Environments
 				}
 				// The room will auto-add itself to the list of all rooms
 				new Room (roomName, roomDesc, items, exitDic);
+			}
+			foreach (KeyValuePair<string, Room> kvp in allRooms)
+			{
+				kvp.Value.InitRoom ();
 			}
 		}
 
@@ -164,14 +169,18 @@ namespace TextAdventure.Environments
 			this.description = description;
 			this.neighborRooms = neighborRooms;
 			this.items = new List<Item> ();
-			roomBinding = new LuaBinding (name);
-			AddObserver (roomBinding);
 			for (int i = 0; i < items.Length; i++)
 			{
 				this.items.Add (new Item (items [i]));
 			}
-			Notify (this, TextAdventure.Observers.EventList.OnRoomInit);
+			roomBinding = new LuaBinding (name);
+			AddObserver (roomBinding);
 			allRooms.Add (this.name.ToLower (), this);
+		}
+
+		protected void InitRoom ()
+		{
+			Notify (this, TextAdventure.Observers.EventList.OnRoomInit);
 		}
 
 		/// <summary>

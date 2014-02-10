@@ -27,7 +27,6 @@ namespace TextAdventure.IO
 				}
 			}
 			private static Lua _lua = null;
-			private static bool didAllFiles = false;
 			//Filename of the Lua file to load
 			public static void Init ()
 			{
@@ -39,8 +38,7 @@ namespace TextAdventure.IO
 				_lua = new LuaInterface.Lua ();
 
 				System.Type t = typeof(LuaManager);
-				MethodInfo print = t.GetMethod ("LuaPrint");
-				lua.RegisterFunction ("print", null, print);
+				lua.RegisterFunction ("print", null, t.GetMethod ("LuaPrint"));
 				lua.RegisterFunction ("error", null, t.GetMethod ("LuaError"));
 				lua.RegisterFunction ("assert", null, t.GetMethod ("LuaAssert",
 																BindingFlags.Static | BindingFlags.Public,
@@ -51,40 +49,58 @@ namespace TextAdventure.IO
 				},
 																null)
 				);
+				lua.RegisterFunction ("require", null, t.GetMethod ("AddFilePath"));
 
 				//Init LuaBinding class that demonstrates communication
 				//Also tell Lua about the LuaBinding object to allow Lua to call C# functions
 				mainBinding = new MainBinding ();
 			}
 			public static LuaBinding mainBinding = null;
-			private static List<string> filePaths = new List<string> ();
+			private static Dictionary<string, bool> filePaths = new Dictionary<string, bool> ();
 			private static List<QueuedFunction> queuedFuncs = new List<QueuedFunction> ();
+			private static List<string> registeredBindings = new List<string> ();
+			public static string scriptsPath = "";
 
-			public static void AddFilePath (string path)
+			public static void RegisterBinding (string name, LuaBinding binding)
 			{
-				if (System.IO.File.Exists (path))
-				{
-					filePaths.Add (path);
-				}
+				lua [name] = binding;
+				registeredBindings.Add (name);
+				CheckBindings ();
 			}
 
-			public static void DoAllFiles ()
+			public static object[] AddFilePath (string path)
 			{
-				if (didAllFiles)
+				path = path.Replace ('.', '/'); // Change lua-style directories to regular directories
+				if (path.EndsWith ("/lua")) // Fix extension
 				{
-					return;
+					path = path.Substring (0, path.Length - 4);
 				}
-				didAllFiles = true;
-				foreach (string file in filePaths)
+				path += ".lua";
+				Language.Output.Print (path);
+				path = System.IO.Path.Combine (scriptsPath, path);
+				if (System.IO.File.Exists (path))
 				{
-					DoFile (file);
+					return DoFile (path);
 				}
+				return null;
+			}
+
+			private static void CheckBindings ()
+			{
+				List<QueuedFunction> removeFunctions = new List<QueuedFunction> ();
 				foreach (QueuedFunction queuedFunc in queuedFuncs)
 				{
 					LuaBinding binding = queuedFunc.binding;
-					binding.CallLuaFunction (queuedFunc.funcName, queuedFunc.param);
+					if (registeredBindings.Contains (binding.name))
+					{
+						binding.CallLuaFunction (queuedFunc.funcName, queuedFunc.param);
+						removeFunctions.Add (queuedFunc);
+					}
 				}
-				queuedFuncs.Clear ();
+				foreach (QueuedFunction func in removeFunctions)
+				{
+					queuedFuncs.Remove (func);
+				}
 			}
 
 			public static void LuaPrint (object message)
@@ -100,7 +116,7 @@ namespace TextAdventure.IO
 
 			public static bool QueueFunction (LuaBinding binding, string funcName, object[] param)
 			{
-				if (didAllFiles)
+				if (registeredBindings.Contains (binding.name))
 				{
 					return true;
 				}
@@ -126,14 +142,30 @@ namespace TextAdventure.IO
 				}
 			}
 
-			public static void DoFile (string dataPath)
+			public static object[] DoFile (string dataPath)
 			{
+				if (filePaths.ContainsKey (dataPath))
+				{
+					if (filePaths [dataPath])
+					{
+						return null;
+					}
+				}
 				string extension = System.IO.Path.GetExtension (dataPath);
 				if (extension.ToLower () != ".lua")
 				{
 					throw new System.IO.IOException (dataPath + " is not an Lua file.");
 				}
-				lua.DoFile (dataPath);
+				object[] output = lua.DoFile (dataPath);
+				if (filePaths.ContainsKey (dataPath))
+				{
+					filePaths [dataPath] = true;
+				}
+				else
+				{
+					filePaths.Add (dataPath, true);
+				}
+				return output;
 			}
 
 			public static bool DoString (string luaString)
