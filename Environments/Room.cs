@@ -58,6 +58,8 @@ namespace TextAdventure.Environments
 		private const string GO_HELP = "Move in the specified direction.";
 		private const string PICK_UP_HELP = "Pick up an item.";
 
+		private bool roomPrinted = false;
+
 		/// <summary>
 		/// Initializes all rooms in the game based on the path to a JSON file.
 		/// </summary>
@@ -241,6 +243,11 @@ namespace TextAdventure.Environments
 			PrintCharacters (characters);
 			PrintItems (items);
 			PrintExits (neighborRooms);
+			if (!roomPrinted)
+			{
+				Notify (this, Observers.EventList.OnRoomFirstPrint);
+				roomPrinted = true;
+			}
 			Notify (this, Observers.EventList.OnRoomPrint);
 		}
 

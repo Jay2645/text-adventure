@@ -47,6 +47,7 @@ namespace TextAdventure.Language
 		private static Dictionary<string, Action<string>> _commands = null;
 		private static Dictionary<string, LuaFunction> _luaCommands = null;
 		private static Dictionary<string, string> _commandHelp = null;
+		private static Dictionary<string, string> commandIndex = new Dictionary<string, string> ();
 
 		/// <summary>
 		/// A message stating that the game does not understand the input provided.
@@ -145,6 +146,7 @@ namespace TextAdventure.Language
 					param = input;
 				}
 			}
+			command = command.ToLower ();
 			// Special case: User wants to quit the game
 			if (command == "quit" || command == "q")
 			{
@@ -154,10 +156,12 @@ namespace TextAdventure.Language
 			// Invoke the command.
 			if (commands.ContainsKey (command))
 			{
+				NotifyObservers (command, param); // Notify FIRST, otherwise "go" command notifications never get processed
 				commands [command].Invoke (param);
 			}
 			else if (luaCommands.ContainsKey (command))
 			{
+				NotifyObservers (command, param);
 				luaCommands [command].Call (param);
 			}
 			else
@@ -167,6 +171,36 @@ namespace TextAdventure.Language
 			}
 			// Back to the game loop.
 			Input.ProcessLine ();
+		}
+
+		private static void NotifyObservers (string command, string param)
+		{
+			Globals.player.Notify (command, Observers.EventList.OnPlayerCommand);
+			if (commandIndex.ContainsKey (command))
+			{
+				commandIndex [command] = param;
+			}
+			else
+			{
+				commandIndex.Add (command, param);
+			}
+		}
+
+		/// <summary>
+		/// Gets the last parameters for the given command.
+		/// For example, if the player typed "go south" then "go north," the command "go" would return "north."
+		/// </summary>
+		/// <param name='command'>
+		/// The command to check.
+		/// </param>
+		public static string GetCommandParameters (string command)
+		{
+			command = command.ToLower ();
+			if (commandIndex.ContainsKey (command))
+			{
+				return commandIndex [command];
+			}
+			return "";
 		}
 
 		/// <summary>

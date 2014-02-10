@@ -6,8 +6,10 @@ namespace TextAdventure.Observers
 	{
 		OnRoomInit,
 		OnRoomEnter,
+		OnRoomFirstPrint,
 		OnRoomPrint,
-		OnCharacterSpeak
+		OnCharacterSpeak,
+		OnPlayerCommand
 	}
 }
 
