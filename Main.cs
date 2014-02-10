@@ -13,7 +13,7 @@ namespace TextAdventure
 	{
 		private const string WELCOME_STRING = "Welcome to ";
 		public const string GAME_NAME = "Text Adventure";
-		private const string SELECT_MAP_STRING = "Please enter the name of the map you'd like to load, without extension.";
+		private const string SELECT_MAP_STRING = "Please enter the name of the map you'd like to load.";
 		private const string FILE_NOT_FOUND = "File not found: ";
 
 		public static void Main (string[] args)
@@ -38,8 +38,6 @@ namespace TextAdventure
 		/// </summary>
 		private static void LoadMap ()
 		{
-			string roomPath = Path.GetDirectoryName (Assembly.GetEntryAssembly ().Location);
-			roomPath = Path.Combine (roomPath, "Maps");
 			Output.Print (SELECT_MAP_STRING);
 			string input = Input.GetLine ();
 			if (input.ToLower () == "debug")
@@ -49,7 +47,28 @@ namespace TextAdventure
 				LoadMap ();
 				return;
 			}
-			input = Path.Combine (roomPath, input, input + ".map");
+			if (!File.Exists (input) && File.Exists (input + ".map"))
+			{
+				input += ".map";
+			}
+			else if (Directory.Exists (input))
+			{
+				string[] directoryFiles = Directory.GetFiles (input);
+				foreach (string file in directoryFiles)
+				{
+					if (file.EndsWith (".map"))
+					{
+						input = file;
+						break;
+					}
+				}
+			}
+			else if (!File.Exists (input))
+			{
+				string roomPath = Path.GetDirectoryName (Assembly.GetEntryAssembly ().Location);
+				roomPath = Path.Combine (roomPath, "Maps");
+				input = Path.Combine (roomPath, input, input + ".map");
+			}
 			if (File.Exists (input))
 			{
 				Room.InitRooms (input);
