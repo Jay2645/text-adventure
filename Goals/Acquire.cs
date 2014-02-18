@@ -8,11 +8,10 @@ namespace TextAdventure.Goals
 	/// A goal specifying that this character wants to have an item from someone.
 	/// When the specified owner has the specified object, the Goal is satisfied.
 	/// </summary>
-	public class Aquire : Goal
+	public class Acquire : Goal
 	{
-		public Aquire (Character wantee, Item wanted, Character owner)
+		public Acquire (Item wanted, Character owner)
 		{
-			character = wantee;
 			this.wanted = wanted;
 			this.owner = owner;
 		}
@@ -22,6 +21,11 @@ namespace TextAdventure.Goals
 		public override bool CheckGoal ()
 		{
 			return owner.backpack.ContainsItem (wanted);
+		}
+
+		public override string ToString ()
+		{
+			return owner + "needs to acquire " + wanted;
 		}
 	}
 }

@@ -62,12 +62,13 @@
     <Compile Include="Observer\Observer.cs" />
     <Compile Include="Observer\Subject.cs" />
     <Compile Include="Goals\Goal.cs" />
-    <Compile Include="Goals\Aquire.cs" />
     <Compile Include="IO\Lua\LuaBinding.cs" />
     <Compile Include="IO\Lua\LuaManager.cs" />
     <Compile Include="Observer\EventList.cs" />
     <Compile Include="IO\Lua\MainBinding.cs" />
     <Compile Include="States\State.cs" />
+    <Compile Include="Goals\Perform.cs" />
+    <Compile Include="Goals\Acquire.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.desktop">

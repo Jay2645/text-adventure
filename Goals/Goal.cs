@@ -3,11 +3,14 @@ using TextAdventure.GameObjects.Characters;
 
 namespace TextAdventure.Goals
 {
-	public abstract class Goal
+	public abstract class Goal : Observers.Observer
 	{
 		public abstract bool CheckGoal ();
 
-		public Character character = null;
+		public override void OnNotify (object entity, TextAdventure.Observers.EventList eventType)
+		{
+			/* EMPTY */
+		}
 	}
 }
 

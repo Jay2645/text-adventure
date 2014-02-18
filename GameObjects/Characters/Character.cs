@@ -71,9 +71,23 @@ namespace TextAdventure.GameObjects.Characters
 			return new Character (name);
 		}
 
-		public void SetAquireGoal (string wanted, string owner)
+		public void SetAcquireGoal (string wanted, string owner)
 		{
-			goal = new TextAdventure.Goals.Aquire (this, new Item (wanted), GetCharacter (owner));
+			SetGoal (new TextAdventure.Goals.Acquire (new Item (wanted), GetCharacter (owner)));
+		}
+
+		public void SetPerformGoal (string action, string param)
+		{
+			SetGoal (new TextAdventure.Goals.Perform (action, param));
+		}
+
+		private void SetGoal (Goals.Goal g)
+		{
+			if (Globals.isDebug)
+			{
+				Language.Output.Print ("Changing goal to " + g);
+			}
+			goal = g;
 		}
 
 		/// <summary>

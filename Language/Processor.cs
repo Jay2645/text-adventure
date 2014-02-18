@@ -146,7 +146,8 @@ namespace TextAdventure.Language
 					param = input;
 				}
 			}
-			command = command.ToLower ();
+			command = command.ToLower ().Trim ();
+			param = param.Trim ();
 			// Special case: User wants to quit the game
 			if (command == "quit" || command == "q")
 			{
@@ -168,6 +169,10 @@ namespace TextAdventure.Language
 			{
 				// Could not find the specified command.
 				Output.Print (DO_NOT_UNDERSTAND);
+				if (Globals.isDebug)
+				{
+
+				}
 			}
 			// Back to the game loop.
 			Input.ProcessLine ();
@@ -175,7 +180,6 @@ namespace TextAdventure.Language
 
 		private static void NotifyObservers (string command, string param)
 		{
-			Globals.player.Notify (command, Observers.EventList.OnPlayerCommand);
 			if (commandIndex.ContainsKey (command))
 			{
 				commandIndex [command] = param;
@@ -184,6 +188,7 @@ namespace TextAdventure.Language
 			{
 				commandIndex.Add (command, param);
 			}
+			Globals.player.Notify (command, Observers.EventList.OnPlayerCommand);
 		}
 
 		/// <summary>

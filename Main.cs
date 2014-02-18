@@ -24,9 +24,6 @@ namespace TextAdventure
 			// Load the map.
 			LoadMap ();
 
-			// Initialize scripting logic
-			//TextAdventure.IO.LuaSystem.LuaManager.DoAllFiles ();
-
 			Console.Clear ();
 
 			// Start game loop

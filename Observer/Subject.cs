@@ -25,6 +25,8 @@ namespace TextAdventure
 			public void Notify (object entity, EventList eventType)
 			{
 				List<Observer> allObservers = new List<Observer> ();
+				List<Observer> cObservers = new List<Observer> ();
+				List<Observer> luaObservers = new List<Observer> ();
 				foreach (Observer o in observerList)
 				{
 					if (o == null)
@@ -32,9 +34,21 @@ namespace TextAdventure
 						continue;
 					}
 					allObservers.Add (o);
+					if (o is IO.LuaSystem.LuaBinding)
+					{
+						luaObservers.Add (o);
+					}
+					else
+					{
+						cObservers.Add (o);
+					}
 				}
 				observerList = allObservers;
-				foreach (Observer o in observerList)
+				foreach (Observer o in cObservers) // Do the C# observers first to make sure all code is processed
+				{
+					o.OnNotify (entity, eventType);
+				}
+				foreach (Observer o in luaObservers)
 				{
 					o.OnNotify (entity, eventType);
 				}
