@@ -169,10 +169,6 @@ namespace TextAdventure.Language
 			{
 				// Could not find the specified command.
 				Output.Print (DO_NOT_UNDERSTAND);
-				if (Globals.isDebug)
-				{
-
-				}
 			}
 			// Back to the game loop.
 			Input.ProcessLine ();
