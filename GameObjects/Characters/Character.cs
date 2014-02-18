@@ -83,10 +83,7 @@ namespace TextAdventure.GameObjects.Characters
 
 		private void SetGoal (Goals.Goal g)
 		{
-			if (Globals.isDebug)
-			{
-				Language.Output.Print ("Changing goal to " + g);
-			}
+			Debug.Log ("Changing goal to " + g);
 			goal = g;
 		}
 

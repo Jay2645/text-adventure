@@ -69,6 +69,7 @@
     <Compile Include="States\State.cs" />
     <Compile Include="Goals\Perform.cs" />
     <Compile Include="Goals\Acquire.cs" />
+    <Compile Include="Debug.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.desktop">

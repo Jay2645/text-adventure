@@ -106,10 +106,7 @@ namespace TextAdventure.IO
 				{
 					return null;
 				}
-				if (Globals.isDebug)
-				{
-					Language.Output.Print (name + ":" + funcName);
-				}
+				Debug.Log (name + ":" + funcName);
 				foreach (KeyValuePair<string, LuaFunction> kvp in functionList)
 				{
 					if (kvp.Key.ToLower () == funcName)

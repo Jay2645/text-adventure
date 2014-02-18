@@ -76,7 +76,7 @@ namespace TextAdventure.IO
 					path = path.Substring (0, path.Length - 4);
 				}
 				path += ".lua";
-				Language.Output.Print (path);
+				Debug.Log (path);
 				path = System.IO.Path.Combine (scriptsPath, path);
 				if (System.IO.File.Exists (path))
 				{
@@ -175,7 +175,7 @@ namespace TextAdventure.IO
 					lua.DoString (luaString);
 					return true;
 				}
-				catch (System.Exception)
+				catch (LuaInterface.LuaException)
 				{
 					return false;
 				}

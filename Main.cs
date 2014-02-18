@@ -21,13 +21,20 @@ namespace TextAdventure
 			// Welcome player
 			Output.Print (WELCOME_STRING + GAME_NAME + "!");
 
-			// Load the map.
-			LoadMap ();
+			try
+			{
+				// Load the map.
+				LoadMap ();
 
-			Console.Clear ();
+				Console.Clear ();
 
-			// Start game loop
-			Globals.player.EnterRoom (Room.GetRoom ("start"));
+				// Start game loop
+				Globals.player.EnterRoom (Room.GetRoom ("start"));
+			}
+			catch (Exception e)
+			{
+				Debug.LogException (e); // This will exit for us
+			}
 		}
 
 		/// <summary>
@@ -39,8 +46,8 @@ namespace TextAdventure
 			string input = Input.GetLine ();
 			if (input.ToLower () == "debug")
 			{
-				Output.Print ("Debug mode initialized.");
 				Globals.isDebug = true;
+				Debug.LogWarning ("Debug mode initialized.");
 				LoadMap ();
 				return;
 			}
@@ -72,7 +79,7 @@ namespace TextAdventure
 			}
 			else
 			{
-				Output.Print (FILE_NOT_FOUND + input);
+				Debug.LogError (FILE_NOT_FOUND + input, true);
 				LoadMap ();
 			}
 		}

@@ -34,7 +34,6 @@ namespace TextAdventure.Goals
 			}
 			string currentParam = Language.Processor.GetCommandParameters (currentAction);
 			currentParam = currentParam.ToLower ().Trim (); // Probably not needed but I'm being pedantic
-			Language.Output.Print (currentAction + " , " + currentParam + ": needed " + action + ", " + param);
 			if (currentParam == param)
 			{
 				actionPerformed = true;
