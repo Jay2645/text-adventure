@@ -165,6 +165,11 @@ namespace TextAdventure.Language
 				NotifyObservers (command, param);
 				luaCommands [command].Call (param);
 			}
+			else if (Globals.room.HasCommand (command))
+			{
+				NotifyObservers (command, param);
+				Globals.room.ExecuteCommand (command, param);
+			}
 			else
 			{
 				// Could not find the specified command.
@@ -219,10 +224,15 @@ namespace TextAdventure.Language
 				{
 					Help (kvp.Key);
 				}
+				Globals.room.Help (input);
 			}
 			else if (commandHelp.ContainsKey (input))
 			{
 				Output.Print (input + ": " + commandHelp [input]);
+			}
+			else
+			{
+				Globals.room.Help (input);
 			}
 		}
 	}

@@ -47,6 +47,11 @@ namespace TextAdventure.Environments
 		/// </summary>
 		protected LuaBinding roomBinding = null;
 
+		// Room-specific commands
+		private Dictionary<string, Action<string>> commands = new Dictionary<string, Action<string>> ();
+		private Dictionary<string, LuaInterface.LuaFunction> luaCommands = new Dictionary<string, LuaInterface.LuaFunction> ();
+		private Dictionary<string, string> commandHelp = new Dictionary<string, string> ();
+
 		// Strings to output to the console, to be localized at a later date
 		private const string MULTI_EXIT_STRING = "Exits are to the ";
 		private const string SINGLE_EXIT_STRING = "There is an exit to the ";
@@ -127,7 +132,89 @@ namespace TextAdventure.Environments
 			}
 		}
 
+		public bool HasCommand (string command)
+		{
+			command = command.ToLower ().Trim ();
+			return commands.ContainsKey (command) || luaCommands.ContainsKey (command);
+		}
 
+		public void ExecuteCommand (string command, string param)
+		{
+			if (!HasCommand (command))
+			{
+				return;
+			}
+			command = command.ToLower ().Trim ();
+			param = param.ToLower ().Trim ();
+			if (commands.ContainsKey (command))
+			{
+				commands [command].Invoke (param);
+			}
+			else
+			{
+				luaCommands [command].Call (param);
+			}
+		}
+
+		/// <summary>
+		/// Adds a command to the dictionary.
+		/// </summary>
+		/// <param name='name'>
+		/// What the user types in to invoke the command.
+		/// </param>
+		/// <param name='helpDesc'>
+		/// What the user sees when they type "help command".
+		/// </param>
+		/// <param name='perform'>
+		/// The Method to invoke. Anything after the command string will be passed as a parameter.
+		/// </param>
+		public void AddCommand (string name, string helpDesc, Action<string> perform)
+		{
+			name = name.ToLower ();
+			if (!commandHelp.ContainsKey (name))
+			{
+				commandHelp.Add (name, helpDesc);
+				commands.Add (name, perform);
+			}
+		}
+
+		public void AddCommand (string name, string helpDesc, LuaInterface.LuaFunction perform)
+		{
+			Debug.LogWarning ("Adding command.");
+			name = name.ToLower ();
+			if (!commandHelp.ContainsKey (name))
+			{
+				commandHelp.Add (name, helpDesc);
+				luaCommands.Add (name, perform);
+			}
+		}
+
+		/// <summary>
+		/// Provides help based on the specified input.
+		/// If the input is empty, will provide all help.
+		/// </summary>
+		/// <param name='input'>
+		/// The subject where help is needed.
+		/// </param>
+		public void Help (string input)
+		{
+			if (input == "")
+			{
+				foreach (KeyValuePair<string, string> kvp in commandHelp)
+				{
+					string key = kvp.Key;
+					if (key == "")
+					{
+						continue;
+					}
+					Help (key);
+				}
+			}
+			else if (commandHelp.ContainsKey (input))
+			{
+				Output.Print (input + ": " + commandHelp [input]);
+			}
+		}
 
 		/// <summary>
 		/// Gets a room by name.

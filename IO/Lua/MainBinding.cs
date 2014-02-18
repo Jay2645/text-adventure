@@ -38,6 +38,11 @@ namespace TextAdventure.IO.LuaSystem
 			TextAdventure.Language.Processor.AddCommand (command, help, function);
 		}
 
+		public void AddCommand (string command, string help, LuaInterface.LuaFunction function, Room room)
+		{
+			room.AddCommand (command, help, function);
+		}
+
 		public void GameOver (string message)
 		{
 			Language.Output.Print ("Game over!");
